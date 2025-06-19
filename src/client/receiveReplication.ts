@@ -2,7 +2,7 @@ import { AnyComponent, AnyEntity, World } from "@rbxts/matter";
 import { ComponentCtor } from "@rbxts/matter/lib/component";
 import { ReplicatedStorage } from "@rbxts/services";
 import { t } from "@rbxts/t";
-import { ComponentNames, components, UnionComponentsMap } from "./components";
+import { ComponentNames, components, UnionComponentsMap } from "shared/components";
 
 interface ClientState {
 	entityIdMap: Map<string, AnyEntity>;
