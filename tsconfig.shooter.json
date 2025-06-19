@@ -1,15 +1,4 @@
 {
-	/*  ⬇️  SEULEMENT ces deux dossiers seront scannés  */
-	"include": [
-		"src/shared/**/*",
-		"src/places/shooter/**/*",
-		"src/sharedClient/**/*",
-		"src/sharedServer/**/*"
-	],
-
-	/*  ⬇️  le dossier de l’autre place est explicitement écarté  */
-	"exclude": [],
-
 	"compilerOptions": {
 		"rootDir": "src",
 		"outDir": "out/shooter",
