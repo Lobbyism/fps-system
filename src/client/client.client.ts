@@ -1,6 +1,8 @@
 import { AnyEntity } from "@rbxts/matter";
-import { ReplicatedStorage } from "@rbxts/services";
 import { receiveReplication } from "./receiveReplication";
 import { start } from "shared/start";
+import { StarterPlayer } from "@rbxts/services";
 
-start([ReplicatedStorage.TS.systems], { entityIdMap: new Map<string, AnyEntity>() })(receiveReplication);
+start([StarterPlayer.StarterPlayerScripts.TS.systems], { entityIdMap: new Map<string, AnyEntity>() })(
+	receiveReplication,
+);
