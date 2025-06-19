@@ -1,16 +1,13 @@
 {
 	"name": "rshooter",
 	"servePort": 8031,
-	"globIgnorePaths": [
-		"**/package.json",
-		"**/tsconfig.lobby.json"
-	],
+	"globIgnorePaths": ["**/package.json", "**/tsconfig.lobby.json"],
 	"tree": {
 		"$className": "DataModel",
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
 			"TS": {
-				"$path": "out/shooter/places/shooter/server"
+				"$path": "out/shooter/server"
 			}
 		},
 		"ReplicatedStorage": {
@@ -24,32 +21,16 @@
 					}
 				}
 			},
-			"TS-global": {
-				"$path": "out/shooter/shared"
-			},
 			"TS": {
-				"$path": "out/shooter/places/shooter/modules"
+				"$path": "out/shooter/shared"
 			}
-		
 		},
 		"StarterPlayer": {
 			"$className": "StarterPlayer",
 			"StarterPlayerScripts": {
 				"$className": "StarterPlayerScripts",
 				"TS": {
-					"$path": "out/shooter/places/shooter/client",
-					"SharedClient": {
-						"$path": "out/shooter/sharedClient"
-					}
-				}
-			}
-		},
-		"ServerStorage": {
-			"$className": "ServerStorage",
-			"TS-global": {
-				"$className": "Folder",
-				"SharedServer": {
-					"$path": "out/shooter/sharedServer"
+					"$path": "out/shooter/client"
 				}
 			}
 		},
