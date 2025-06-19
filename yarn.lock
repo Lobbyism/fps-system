@@ -132,10 +132,20 @@
   resolved "https://registry.npmjs.org/@rbxts/compiler-types/-/compiler-types-3.0.0-types.0.tgz"
   integrity sha512-VGOHJPoL7+56NTatMGqQj3K7xWuzEV+aP4QD5vZiHu+bcff3kiTmtoadaF6NkJrmwfFAvbsd4Dg764ZjWNceag==
 
+"@rbxts/matter@^0.8.5":
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/@rbxts/matter/-/matter-0.8.5.tgz#d0fba95f488691c9ebcd9afab9585f26fa246f94"
+  integrity sha512-xQ+ggK6w1fEHeVD1W3KAojHSZrO+H3eua344fTMo87WyeZ+Y5sDxLadOQHBtNR4dLh7kMS0HJ7MPRiFktjkPAA==
+
 "@rbxts/object-utils@^1.0.4":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@rbxts/object-utils/-/object-utils-1.0.4.tgz"
   integrity sha512-dLLhf022ipV+9i910sOE7kl9losKHoon0WgeerHqVMQA5EYsLUsVT2AxhJuhk8MiDn5oJ2GiFofE/LadY9TpJQ==
+
+"@rbxts/plasma@^0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@rbxts/plasma/-/plasma-0.4.5.tgz#690d1b0844febec86d944914181a9e63c6027d35"
+  integrity sha512-VtbrO/ZRxnRNDadFth/Y0+3NNxJlYTMhS1qWnbRht4NrAOK0hrk0iwGZJz+aOfKSQ2h/Rbh9DLW3SKy124XqaA==
 
 "@rbxts/pretty-react-hooks@^0.6.4":
   version "0.6.4"
@@ -166,6 +176,11 @@
   dependencies:
     "@rbxts/react-vendor" "17.2.3"
 
+"@rbxts/rewire@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@rbxts/rewire/-/rewire-0.3.0.tgz#47f0cd651fe405cf418936799d2a4dac6b1bb7ce"
+  integrity sha512-wChhGZ3kEkEsMK9ZuwKpwRsC7OGVZlvxrYMR3beFgCIPXE58JKLziBLkDACmd709XCCEmsMAqv9HMCMhSTD08Q==
+
 "@rbxts/ripple@^0.9.1", "@rbxts/ripple@^0.9.3":
   version "0.9.3"
   resolved "https://registry.npmjs.org/@rbxts/ripple/-/ripple-0.9.3.tgz"
@@ -182,6 +197,11 @@
   integrity sha512-P/A0IiH9wuZdSJYr4Us0MDFm61nvIFR0acfKFHLkcOsgvIgELC90Up9ugiSsaMEHRIcIcO5UjE39LuS3xTzQHw==
   dependencies:
     "@rbxts/services" "^1.5.1"
+
+"@rbxts/t@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@rbxts/t/-/t-3.2.1.tgz#3f9f0d15c01e40a093b02d93fed2f220c5a53d4c"
+  integrity sha512-/fnf2QSx+TI3HSJ6QW2ikvGQk0mlx/63UXo60pLAKGqbxXiAuTJh88bpKpHw6aCzfFLJAwrVIcgCUOokLMPcag==
 
 "@rbxts/types@^1.0.849":
   version "1.0.855"
