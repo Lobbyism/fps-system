@@ -1,0 +1,75 @@
+{
+	"name": "rshooter",
+	"servePort": 8031,
+	"globIgnorePaths": [
+		"**/package.json",
+		"**/tsconfig.lobby.json"
+	],
+	"tree": {
+		"$className": "DataModel",
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"TS": {
+				"$path": "out/shooter/places/shooter/server"
+			}
+		},
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"rbxts_include": {
+				"$path": "include",
+				"node_modules": {
+					"$className": "Folder",
+					"@rbxts": {
+						"$path": "node_modules/@rbxts"
+					}
+				}
+			},
+			"TS-global": {
+				"$path": "out/shooter/shared"
+			},
+			"TS": {
+				"$path": "out/shooter/places/shooter/modules"
+			}
+		
+		},
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
+				"TS": {
+					"$path": "out/shooter/places/shooter/client",
+					"SharedClient": {
+						"$path": "out/shooter/sharedClient"
+					}
+				}
+			}
+		},
+		"ServerStorage": {
+			"$className": "ServerStorage",
+			"TS-global": {
+				"$className": "Folder",
+				"SharedServer": {
+					"$path": "out/shooter/sharedServer"
+				}
+			}
+		},
+		"Workspace": {
+			"$className": "Workspace",
+			"$properties": {
+				"FilteringEnabled": true
+			}
+		},
+		"HttpService": {
+			"$className": "HttpService",
+			"$properties": {
+				"HttpEnabled": true
+			}
+		},
+		"SoundService": {
+			"$className": "SoundService",
+			"$properties": {
+				"RespectFilteringEnabled": true
+			}
+		}
+	}
+}

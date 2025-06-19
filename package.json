@@ -1,0 +1,33 @@
+{
+	"name": "shooter-extraction",
+	"packageManager": "yarn@1.22.22",
+	"version": "0.1.0",
+	"private": true,
+	"license": "MIT",
+	"scripts": {
+		"rojo:shooter": "rojo serve shooter.project.json",
+		"dev:shooter": "rbxtsc --watch --project tsconfig.shooter.json --rojo shooter.project.json"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/object-utils": "^1.0.4",
+		"@rbxts/types": "^1.0.849",
+		"@typescript-eslint/eslint-plugin": "^8.10.0",
+		"@typescript-eslint/parser": "^8.10.0",
+		"eslint": "^9.13.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"eslint-plugin-roblox-ts": "^0.0.36",
+		"prettier": "^3.3.3",
+		"roblox-ts": "^3.0.0",
+		"typescript": "^5.6.3"
+	},
+	"dependencies": {
+		"@rbxts/camera-shaker": "^1.0.8",
+		"@rbxts/pretty-react-hooks": "^0.6.4",
+		"@rbxts/react": "^17.2.3",
+		"@rbxts/react-roblox": "^17.2.3",
+		"@rbxts/ripple": "^0.9.1",
+		"@rbxts/services": "^1.5.5"
+	}
+}

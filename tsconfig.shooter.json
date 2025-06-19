@@ -1,0 +1,37 @@
+{
+	/*  ⬇️  SEULEMENT ces deux dossiers seront scannés  */
+	"include": [
+		"src/shared/**/*",
+		"src/places/shooter/**/*",
+		"src/sharedClient/**/*",
+		"src/sharedServer/**/*"
+	],
+
+	/*  ⬇️  le dossier de l’autre place est explicitement écarté  */
+	"exclude": [],
+
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "out/shooter",
+		"baseUrl": "src",
+		"incremental": true,
+		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo.shooter",
+
+		/* — tes options habituelles — */
+		"jsx": "react",
+		"jsxFactory": "React.createElement",
+		"jsxFragmentFactory": "React.Fragment",
+		"module": "commonjs",
+		"target": "ESNext",
+		"strict": true,
+		"typeRoots": ["node_modules/@rbxts"],
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
+		"experimentalDecorators": true,
+		"moduleResolution": "Node",
+		"forceConsistentCasingInFileNames": true,
+		"noLib": true,
+		"resolveJsonModule": true,
+		"moduleDetection": "force"
+	}
+}
