@@ -3,15 +3,13 @@ import { ComponentCtor } from "@rbxts/matter/lib/component";
 import { ReplicatedStorage } from "@rbxts/services";
 import { t } from "@rbxts/t";
 import { ComponentNames, components, UnionComponentsMap } from "shared/components";
-
-interface ClientState {
-	entityIdMap: Map<string, AnyEntity>;
-}
+import { ClientState } from "./client.client";
 
 const remoteEvent = ReplicatedStorage.WaitForChild("Replication") as RemoteEvent;
 
 export function receiveReplication(world: World, state: ClientState): void {
 	const entityIdMap = state.entityIdMap;
+	const reverseEntityIdMap = state.reverseEntityIdMap;
 
 	remoteEvent.OnClientEvent.Connect((entities: Map<string, Map<ComponentNames, { data?: UnionComponentsMap }>>) => {
 		assert(t.map(t.string, t.table)(entities));
@@ -22,6 +20,7 @@ export function receiveReplication(world: World, state: ClientState): void {
 			if (clientEntityId !== undefined && next(componentMap)[0] === undefined) {
 				world.despawn(clientEntityId);
 				entityIdMap.delete(serverEntityId);
+				reverseEntityIdMap.delete(clientEntityId);
 				continue;
 			}
 
@@ -47,6 +46,7 @@ export function receiveReplication(world: World, state: ClientState): void {
 				clientEntityId = world.spawn(...componentsToInsert);
 
 				entityIdMap.set(serverEntityId, clientEntityId);
+				reverseEntityIdMap.set(clientEntityId, serverEntityId);
 			} else {
 				if (componentsToInsert.size() > 0) {
 					world.insert(clientEntityId, ...componentsToInsert);
