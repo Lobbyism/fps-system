@@ -1,7 +1,10 @@
+import { AnyEntity, Entity } from "@rbxts/matter";
 import { GenericOfComponent, newComponent } from "@rbxts/matter/lib/component";
 export const Model = newComponent<{ model: Model }>("Model");
 export const Player = newComponent<{ player: Player }>("Player");
-export const components = { Model, Player };
+export const Weapon = newComponent<{}>("Weapon");
+export const HasWeapon = newComponent<{ serverId: AnyEntity }>("HasWeapon");
+export const components = { Model, Player, Weapon, HasWeapon };
 export type ComponentNames = keyof typeof components;
 export type ComponentsMap = { [K in ComponentNames]: MappedComponentToName<K> };
 export type MappedComponentToName<T extends ComponentNames> = GenericOfComponent<ReturnType<(typeof components)[T]>>;
