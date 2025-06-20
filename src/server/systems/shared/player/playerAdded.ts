@@ -1,13 +1,13 @@
 import { System, useEvent, World } from "@rbxts/matter";
 import { Players } from "@rbxts/services";
 import { Player } from "shared/components";
-let firstRunSystem = false;
-const system: System<[World]> = (world: World) => {
+let firstRunSystem = true;
+const system: System<[World]> = (world) => {
 	const playerAdded = (player: Player) => {
-		print(world.spawn(Player({ player: player })));
+		world.spawn(Player({ player: player }));
 	};
 	if (!firstRunSystem) {
-		firstRunSystem = true;
+		firstRunSystem = false;
 		Players.GetPlayers().forEach(playerAdded);
 	}
 	for (const [_, player] of useEvent(Players, "PlayerAdded")) {
