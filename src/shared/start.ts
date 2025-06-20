@@ -73,10 +73,12 @@ export function start<S extends object>(
 	const events: {
 		default: RBXScriptSignal;
 		fixed?: RBXScriptSignal;
+		preSimulation?: RBXScriptSignal;
 	} = RunService.IsClient()
 		? {
 				default: RunService.RenderStepped,
 				fixed: RunService.Heartbeat,
+				preSimulation: RunService.PreSimulation,
 			}
 		: { default: RunService.Heartbeat };
 
