@@ -1,17 +1,38 @@
-import { System, World } from "@rbxts/matter";
-import { Players, RunService, Workspace } from "@rbxts/services";
+import { System, useEvent, World } from "@rbxts/matter";
+import { Players, RunService, UserInputService, Workspace } from "@rbxts/services";
 import { Player, ViewModel } from "shared";
 const RENDER_STEPPED_NAME = "Camera";
+let isAiming = false;
+let aimCFrame = new CFrame();
 const system: System<[World]> = (world) => {
+	for (const [_, player] of world.query(Player, ViewModel)) {
+		if (player.player !== Players.LocalPlayer) continue;
+		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputBegan")) {
+			if (gameProcessedEvent) continue;
+			if (input.UserInputType !== Enum.UserInputType.MouseButton2) continue;
+			isAiming = true;
+		}
+		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputEnded")) {
+			if (gameProcessedEvent) continue;
+			if (input.UserInputType !== Enum.UserInputType.MouseButton2) continue;
+			isAiming = false;
+		}
+	}
 	for (const [id, viewModelRecord] of world.queryChanged(ViewModel)) {
 		if (!world.contains(id)) continue;
 		const player = world.get(id, Player);
 		if (!player || player.player !== Players.LocalPlayer) continue;
 		RunService.UnbindFromRenderStep(RENDER_STEPPED_NAME);
-		if (viewModelRecord.new) {
+		const viewModel = viewModelRecord.new;
+		if (viewModel) {
 			RunService.BindToRenderStep(RENDER_STEPPED_NAME, Enum.RenderPriority.Camera.Value, () => {
 				if (!Workspace.CurrentCamera) return;
-				viewModelRecord.new?.model.PivotTo(Workspace.CurrentCamera.CFrame);
+				const aimPart = viewModel.model.FindFirstChild("AimPart");
+				if (!aimPart || !aimPart.IsA("BasePart") || !viewModel.model.PrimaryPart) return;
+				aimCFrame = isAiming
+					? aimCFrame.Lerp(aimPart.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame), 0.1)
+					: aimCFrame.Lerp(new CFrame(), 0.1);
+				viewModel.model.PivotTo(Workspace.CurrentCamera.CFrame.mul(aimCFrame));
 			});
 		}
 	}
