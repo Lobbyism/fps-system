@@ -1,6 +1,7 @@
-import { System, useDeltaTime, World } from "@rbxts/matter";
+import { System, useDeltaTime, useThrottle, World } from "@rbxts/matter";
 import { Workspace } from "@rbxts/services";
-import { Aim, HasWeapon, Model, Weapon } from "shared";
+import { Aim, Ammo, HasWeapon, Model, Weapon } from "shared";
+import { canReload, canShoot, Weapons, WeaponUsageState } from "shared/weapons";
 const garbage = Workspace.WaitForChild("garbage");
 const createPart = (position: Vector3, color: Color3, dt: number) => {
 	const part = new Instance("Part");
@@ -18,11 +19,28 @@ const createPart = (position: Vector3, color: Color3, dt: number) => {
 };
 const RAYCAST_DISTANCE = 50;
 const system: System<[World]> = (world) => {
-	for (const [_, model, hasWeapon, aim] of world.query(Model, HasWeapon, Aim)) {
+	for (const [id, model, hasWeapon, aim, ammo] of world.query(Model, HasWeapon, Aim, Ammo)) {
 		if (!world.contains(hasWeapon.serverId)) continue;
 		const [weapon, weaponModel] = world.get(hasWeapon.serverId, Weapon, Model);
 		if (!weapon || !weaponModel) continue;
-		if (!weapon.isShooting) continue;
+		if (hasWeapon.state !== WeaponUsageState.Shooting) continue;
+		const weaponInfo = Weapons.get(weapon.name);
+		if (!weaponInfo) continue;
+		if (!canShoot(weapon)) {
+			world.insert(
+				id,
+				hasWeapon.patch({
+					state: canReload(ammo, hasWeapon, weapon) ? WeaponUsageState.Reloading : WeaponUsageState.Idle,
+				}),
+			);
+		}
+		if (!useThrottle(1 / weaponInfo.fireRate, hasWeapon.serverId)) continue;
+		world.insert(
+			hasWeapon.serverId,
+			weapon.patch({
+				magazine: weapon.magazine - 1,
+			}),
+		);
 		const raycastParams = new RaycastParams();
 		raycastParams.FilterType = Enum.RaycastFilterType.Exclude;
 		raycastParams.AddToFilter(model.model);
@@ -39,7 +57,8 @@ const system: System<[World]> = (world) => {
 		if (!raycastResult) continue;
 		const humanoid = raycastResult.Instance.Parent?.FindFirstChildWhichIsA("Humanoid");
 		if (!humanoid) continue;
-		humanoid.TakeDamage(0.05 * (raycastResult.Instance.Name === "Head" ? 1.5 : 1));
+		humanoid.TakeDamage(weaponInfo.damage * (raycastResult.Instance.Name === "Head" ? 1.5 : 1));
+		print(`Hit ${raycastResult.Instance.Name === "Head" ? "head" : "body"}`);
 	}
 };
 export = system;
