@@ -1,10 +1,18 @@
 import { Ammo, HasWeapon, Weapon } from "./components";
-export enum WeaponUsageState {
-	Idle = "Idle",
-	Shooting = "Shooting",
-	Reloading = "Reloading",
-}
+export const WeaponUsageState = {
+	Idle: "Idle",
+	Shooting: "Shooting",
+	Reloading: "Reloading",
+} as const;
+export type WeaponUsageState = (typeof WeaponUsageState)[keyof typeof WeaponUsageState];
+export const WeaponAnimationNames = {
+	fire: "Fire",
+} as const;
+export type WeaponAnimationName = keyof typeof WeaponAnimationNames;
 export type WeaponInfo = {
+	animationIds: {
+		[WeaponUsageState.Shooting]: string;
+	};
 	damage: number;
 	fireRate: number;
 	magazineSize: number;
@@ -16,6 +24,9 @@ export const Weapons = new Map<string, WeaponInfo>([
 	[
 		"M16A4",
 		{
+			animationIds: {
+				[WeaponUsageState.Shooting]: "119598271412864",
+			},
 			damage: 0.05,
 			fireRate: 9,
 			magazineSize: 30,
