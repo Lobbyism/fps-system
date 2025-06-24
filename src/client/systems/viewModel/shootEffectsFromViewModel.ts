@@ -1,4 +1,4 @@
-import { System, useDeltaTime, useThrottle, World } from "@rbxts/matter";
+import { System, useThrottle, World } from "@rbxts/matter";
 import { Debris, Players, ReplicatedStorage, UserInputService } from "@rbxts/services";
 import { ClientState } from "client/client.client";
 import { HasWeapon, Model, Player, ViewModel, Weapon } from "shared";
@@ -33,7 +33,9 @@ const system: System<[World, ClientState]> = (world, state) => {
 						}
 					});
 			} else {
-				muzzleOriginAttachment.GetDescendants().forEach((instance) => instance.Destroy());
+				task.delay(1 / weaponInfo.fireRate, () => {
+					muzzleOriginAttachment.GetDescendants().forEach((instance) => instance.Destroy());
+				});
 			}
 		}
 	}
