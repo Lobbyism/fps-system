@@ -1,8 +1,9 @@
-export const SHOOT_REMOTE = {
-	name: "shootRemoteEvent",
+export const WEAPON_REMOTE = {
+	name: "weaponRemoteEvent",
 	payloads: {
-		start: "start",
-		stop: "stop",
-		update: "update",
+		reload: "reload",
+		startShooting: "startShooting",
+		stopShooting: "stopShooting",
+		updateAim: "updateAim",
 	},
 };
