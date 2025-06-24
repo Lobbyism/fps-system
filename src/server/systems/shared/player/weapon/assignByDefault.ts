@@ -1,6 +1,7 @@
 import { System, World } from "@rbxts/matter";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
-import { HasWeapon, Model, Player, Weapon } from "shared";
+import { Ammo, HasWeapon, Model, Player, Weapon } from "shared";
+import { Weapons, WeaponUsageState } from "shared/weapons";
 const system: System<[World]> = (world) => {
 	for (const [id, characterRecord] of world.queryChanged(Model)) {
 		if (!world.contains(id)) continue;
@@ -13,7 +14,9 @@ const system: System<[World]> = (world) => {
 			if (weaponModel) weaponModel.model.Destroy();
 			world.despawn(hasWeapon.serverId);
 		}
-		const weaponModel = ReplicatedStorage.FindFirstChild("Weapons")?.FindFirstChild("M16A4")?.Clone();
+		const weaponInfo = Weapons.get("M16A4");
+		if (!weaponInfo) continue;
+		const weaponModel = ReplicatedStorage.FindFirstChild("Weapons")?.FindFirstChild(weaponInfo.name)?.Clone();
 		if (!weaponModel || !weaponModel.IsA("Model")) continue;
 		weaponModel.Parent = characterRecord.new.model;
 		if (weaponModel.IsDescendantOf(Workspace)) {
@@ -30,13 +33,17 @@ const system: System<[World]> = (world) => {
 			HasWeapon({
 				serverId: world.spawn(
 					Weapon({
-						name: weaponModel.Name,
-						isShooting: false,
+						magazine: weaponInfo.magazineSize,
+						name: weaponInfo.name,
 					}),
 					Model({
 						model: weaponModel,
 					}),
 				),
+				state: WeaponUsageState.Idle,
+			}),
+			Ammo({
+				reserve: weaponInfo.reserveAmmo,
 			}),
 		);
 	}

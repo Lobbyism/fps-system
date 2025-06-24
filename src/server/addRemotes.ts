@@ -1,7 +1,7 @@
 import { ReplicatedStorage } from "@rbxts/services";
-import { SHOOT_REMOTE } from "shared";
+import { WEAPON_REMOTE } from "shared";
 export = () => {
-	const remoteEventNames = [SHOOT_REMOTE.name];
+	const remoteEventNames = [WEAPON_REMOTE.name];
 	const remotesFolder = new Instance("Folder");
 	remotesFolder.Name = "remotes";
 	remoteEventNames.forEach((remoteEventName) => {
