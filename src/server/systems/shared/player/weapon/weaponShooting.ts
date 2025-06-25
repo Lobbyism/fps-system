@@ -1,8 +1,9 @@
 import { System, useDeltaTime, useThrottle, World } from "@rbxts/matter";
-import { Workspace } from "@rbxts/services";
-import { Aim, Ammo, HasWeapon, Model, Weapon } from "shared";
+import { ReplicatedStorage, Workspace } from "@rbxts/services";
+import { Aim, Ammo, HasWeapon, Model, Player, Weapon, WEAPON_REMOTE } from "shared";
 import { canReload, canShoot, Weapons, WeaponUsageState } from "shared/weapons";
 const garbage = Workspace.WaitForChild("garbage");
+const weaponRemoteEvent = ReplicatedStorage.WaitForChild("remotes").WaitForChild(WEAPON_REMOTE.name) as RemoteEvent;
 const createPart = (position: Vector3, color: Color3, dt: number) => {
 	const part = new Instance("Part");
 	part.Shape = Enum.PartType.Ball;
@@ -17,9 +18,9 @@ const createPart = (position: Vector3, color: Color3, dt: number) => {
 	});
 	return part;
 };
-const RAYCAST_DISTANCE = 50;
+const RAYCAST_DISTANCE = 1000;
 const system: System<[World]> = (world) => {
-	for (const [id, model, hasWeapon, aim, ammo] of world.query(Model, HasWeapon, Aim, Ammo)) {
+	for (const [id, player, model, hasWeapon, aim, ammo] of world.query(Player, Model, HasWeapon, Aim, Ammo)) {
 		if (!world.contains(hasWeapon.serverId)) continue;
 		const [weapon, weaponModel] = world.get(hasWeapon.serverId, Weapon, Model);
 		if (!weapon || !weaponModel) continue;
@@ -61,7 +62,15 @@ const system: System<[World]> = (world) => {
 		if (!raycastResult) continue;
 		const humanoid = raycastResult.Instance.Parent?.FindFirstChildWhichIsA("Humanoid");
 		if (!humanoid) continue;
-		humanoid.TakeDamage(weaponInfo.damage * (raycastResult.Instance.Name === "Head" ? 1.5 : 1));
+		const isCritical = raycastResult.Instance.Name === "Head";
+		const damageAmount = (isCritical ? 1.5 : 1) * weaponInfo.damage;
+		humanoid.TakeDamage(damageAmount);
+		weaponRemoteEvent.FireClient(player.player, {
+			type: WEAPON_REMOTE.payloads.damageFeedback,
+			damageAmount: damageAmount,
+			hitInstance: raycastResult.Instance,
+			isCritical: isCritical,
+		});
 		print(`Hit ${raycastResult.Instance.Name === "Head" ? "head" : "body"}`);
 	}
 };

@@ -28,7 +28,7 @@ export const Weapons = new Map<string, WeaponInfo>([
 			animationIds: {
 				[WeaponUsageState.Shooting]: "119598271412864",
 			},
-			damage: 0.05,
+			damage: 10,
 			fireRate: 9,
 			magazineSize: 30,
 			name: "M16A4",

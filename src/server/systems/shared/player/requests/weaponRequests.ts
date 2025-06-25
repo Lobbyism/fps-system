@@ -3,17 +3,17 @@ import { ReplicatedStorage } from "@rbxts/services";
 import { t } from "@rbxts/t";
 import { ClientState } from "client/client.client";
 import { Aim, Ammo, HasWeapon, Player, WEAPON_REMOTE, Weapon } from "shared";
-import { canReload, canShoot, reload, Weapons, WeaponUsageState } from "shared/weapons";
+import { canReload, canShoot, Weapons, WeaponUsageState } from "shared/weapons";
 const weaponRemoteEvent = ReplicatedStorage.WaitForChild("remotes").WaitForChild(WEAPON_REMOTE.name) as RemoteEvent;
-const startShootingCheck = t.strictInterface({
+const startShootingRequestCheck = t.strictInterface({
 	type: t.literal(WEAPON_REMOTE.payloads.startShooting),
 	origin: t.Vector3,
 	direction: t.Vector3,
 });
-const stopShootingCheck = t.strictInterface({
+const stopShootingRequestCheck = t.strictInterface({
 	type: t.literal(WEAPON_REMOTE.payloads.stopShooting),
 });
-const updateAimCheck = t.strictInterface({
+const updateAimRequestCheck = t.strictInterface({
 	type: t.literal(WEAPON_REMOTE.payloads.updateAim),
 	origin: t.Vector3,
 	direction: t.Vector3,
@@ -30,7 +30,7 @@ const system: System<[World, ClientState]> = (world) => {
 			if (!weapon) continue;
 			const weaponInfo = Weapons.get(weapon.name);
 			if (!weaponInfo) continue;
-			if (startShootingCheck(request)) {
+			if (startShootingRequestCheck(request)) {
 				world.insert(
 					id,
 					hasWeapon.patch({
@@ -41,9 +41,9 @@ const system: System<[World, ClientState]> = (world) => {
 								: WeaponUsageState.Idle,
 					}),
 				);
-			} else if (updateAimCheck(request) && canShoot(weapon)) {
+			} else if (updateAimRequestCheck(request) && canShoot(weapon)) {
 				world.insert(id, Aim({ origin: request.origin, direction: request.direction }));
-			} else if (stopShootingCheck(request)) {
+			} else if (stopShootingRequestCheck(request)) {
 				if (hasWeapon.state !== WeaponUsageState.Shooting) continue;
 				world.insert(id, hasWeapon.patch({ state: WeaponUsageState.Idle }));
 			} else if (reloadCheck(request) && canReload(ammo, hasWeapon, weapon)) {
