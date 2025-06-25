@@ -19,6 +19,7 @@ export type WeaponInfo = {
 	name: string;
 	reloadTime: number;
 	reserveAmmo: number;
+	spreadAngle: number;
 };
 export const Weapons = new Map<string, WeaponInfo>([
 	[
@@ -33,6 +34,7 @@ export const Weapons = new Map<string, WeaponInfo>([
 			name: "M16A4",
 			reloadTime: 1.5,
 			reserveAmmo: 90,
+			spreadAngle: 1,
 		},
 	],
 ]);

@@ -4,6 +4,7 @@ import { Player, ViewModel } from "shared";
 const RENDER_STEPPED_NAME = "Camera";
 let isAiming = false;
 let aimCFrame = new CFrame();
+let previousCameraCFrame = new CFrame();
 const system: System<[World]> = (world) => {
 	for (const [_, player] of world.query(Player, ViewModel)) {
 		if (player.player !== Players.LocalPlayer) continue;
@@ -33,6 +34,13 @@ const system: System<[World]> = (world) => {
 					? aimCFrame.Lerp(aimPart.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame), 0.1)
 					: aimCFrame.Lerp(new CFrame(), 0.1);
 				viewModel.model.PivotTo(Workspace.CurrentCamera.CFrame.mul(aimCFrame));
+
+				const cameraBone = viewModel.model.FindFirstChild("CameraBone");
+				if (!cameraBone || !cameraBone.IsA("BasePart")) return;
+				const newCameraCFrame = cameraBone.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame);
+				const offset = newCameraCFrame.ToObjectSpace(previousCameraCFrame);
+				Workspace.CurrentCamera.CFrame = Workspace.CurrentCamera.CFrame.mul(offset);
+				previousCameraCFrame = newCameraCFrame;
 			});
 		}
 	}

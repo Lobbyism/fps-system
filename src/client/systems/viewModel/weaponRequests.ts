@@ -5,6 +5,14 @@ import { HasWeapon, Model, Player, WEAPON_REMOTE, ViewModel, Weapon, Ammo } from
 import { canReload, canShoot, Weapons, WeaponUsageState } from "shared/weapons";
 const RAYCAST_DISTANCE = 1e5;
 const weaponRemoteEvent = ReplicatedStorage.WaitForChild("remotes").WaitForChild(WEAPON_REMOTE.name) as RemoteEvent;
+const getSpreadDirection = (originPosition: Vector3, goalPosition: Vector3, spreadAngle: number) => {
+	const basDirection = goalPosition.sub(originPosition);
+	const baseCFrame = CFrame.lookAt(originPosition, originPosition.add(basDirection));
+	const pitchOffset = math.rad((math.random() - 0.5) * 2 * spreadAngle);
+	const yawOffset = math.rad((math.random() - 0.5) * 2 * spreadAngle);
+	const offsetCFrame = baseCFrame.mul(CFrame.Angles(0, yawOffset, 0)).mul(CFrame.Angles(pitchOffset, 0, 0));
+	return offsetCFrame.LookVector;
+};
 const system: System<[World, ClientState]> = (world, state) => {
 	if (UserInputService.PreferredInput !== Enum.PreferredInput.KeyboardAndMouse) return;
 	for (const [id, player, playerModel, hasWeapon, ammo] of world.query(Player, Model, HasWeapon, Ammo)) {
@@ -57,7 +65,12 @@ const system: System<[World, ClientState]> = (world, state) => {
 					weaponRemoteEvent.FireServer({
 						type: WEAPON_REMOTE.payloads.startShooting,
 						origin: muzzleOriginAttachment.WorldPosition,
-						direction: targetPosition.sub(muzzleOriginAttachment.WorldPosition).Unit,
+						// direction: targetPosition.sub(muzzleOriginAttachment.WorldPosition).Unit,
+						direction: getSpreadDirection(
+							muzzleOriginAttachment.WorldPosition,
+							targetPosition,
+							weaponInfo.spreadAngle,
+						),
 					});
 				} else if (canReload(ammo, hasWeapon, weapon)) {
 					world.insert(
@@ -89,7 +102,12 @@ const system: System<[World, ClientState]> = (world, state) => {
 			weaponRemoteEvent.FireServer({
 				type: WEAPON_REMOTE.payloads.updateAim,
 				origin: muzzleOriginAttachment.WorldPosition,
-				direction: targetPosition.sub(muzzleOriginAttachment.WorldPosition).Unit,
+				// direction: targetPosition.sub(muzzleOriginAttachment.WorldPosition).Unit,
+				direction: getSpreadDirection(
+					muzzleOriginAttachment.WorldPosition,
+					targetPosition,
+					weaponInfo.spreadAngle,
+				),
 			});
 		}
 		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputEnded")) {

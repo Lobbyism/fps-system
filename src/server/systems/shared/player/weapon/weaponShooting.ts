@@ -45,14 +45,18 @@ const system: System<[World]> = (world) => {
 		raycastParams.FilterType = Enum.RaycastFilterType.Exclude;
 		raycastParams.AddToFilter(model.model);
 		raycastParams.AddToFilter(garbage);
-		// const raycastPart = createPart(new Vector3(), new Color3(1, 1, 1), useDeltaTime());
-		// raycastPart.Size = new Vector3(0.25, 0.25, RAYCAST_DISTANCE);
-		// raycastPart.Shape = Enum.PartType.Block;
-		// raycastPart.CFrame = CFrame.lookAt(aim.origin, aim.origin.add(aim.direction)).mul(
-		// 	new CFrame(0, 0, -raycastPart.Size.Z / 2),
-		// );
-		// createPart(aim.origin, new Color3(1, 0, 0), useDeltaTime());
-		// createPart(aim.origin.add(aim.direction.Unit.mul(RAYCAST_DISTANCE)), new Color3(0, 1, 0), useDeltaTime());
+		const raycastPart = createPart(new Vector3(), new Color3(1, 1, 1), 1 / weaponInfo.fireRate);
+		raycastPart.Size = new Vector3(0.25, 0.25, RAYCAST_DISTANCE);
+		raycastPart.Shape = Enum.PartType.Block;
+		raycastPart.CFrame = CFrame.lookAt(aim.origin, aim.origin.add(aim.direction)).mul(
+			new CFrame(0, 0, -raycastPart.Size.Z / 2),
+		);
+		createPart(aim.origin, new Color3(1, 0, 0), 1 / weaponInfo.fireRate);
+		createPart(
+			aim.origin.add(aim.direction.Unit.mul(RAYCAST_DISTANCE)),
+			new Color3(0, 1, 0),
+			1 / weaponInfo.fireRate,
+		);
 		const raycastResult = Workspace.Raycast(aim.origin, aim.direction.Unit.mul(RAYCAST_DISTANCE), raycastParams);
 		if (!raycastResult) continue;
 		const humanoid = raycastResult.Instance.Parent?.FindFirstChildWhichIsA("Humanoid");

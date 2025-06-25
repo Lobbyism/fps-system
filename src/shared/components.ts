@@ -19,6 +19,7 @@ export const HasWeapon = newComponent<{ serverId: AnyEntity; state: WeaponUsageS
 );
 export type HasWeapon = ReturnType<typeof HasWeapon>;
 export const ViewModel = newComponent<{ model: Model }>("ViewModel");
+export type ViewModel = ReturnType<typeof ViewModel>;
 export const components = { Model, Player, Weapon, HasWeapon, Aim, ViewModel, Ammo };
 export type ComponentNames = keyof typeof components;
 export type ComponentsMap = { [K in ComponentNames]: MappedComponentToName<K> };
