@@ -5,6 +5,10 @@ export const WeaponUsageState = {
 	Reloading: "Reloading",
 } as const;
 export type WeaponUsageState = (typeof WeaponUsageState)[keyof typeof WeaponUsageState];
+export const MovementState = {
+	Sliding: "Sliding",
+} as const;
+export type MovementState = (typeof MovementState)[keyof typeof MovementState];
 export const WeaponAnimationNames = {
 	fire: "Fire",
 } as const;
@@ -12,6 +16,7 @@ export type WeaponAnimationName = keyof typeof WeaponAnimationNames;
 export type WeaponInfo = {
 	animationIds: {
 		[WeaponUsageState.Shooting]: string;
+		[MovementState.Sliding]: string;
 	};
 	damage: number;
 	fireRate: number;
@@ -27,6 +32,7 @@ export const Weapons = new Map<string, WeaponInfo>([
 		{
 			animationIds: {
 				[WeaponUsageState.Shooting]: "119598271412864",
+				[MovementState.Sliding]: "79994438112815",
 			},
 			damage: 10,
 			fireRate: 9,

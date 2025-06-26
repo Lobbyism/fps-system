@@ -2,7 +2,6 @@ import { AnyEntity } from "@rbxts/matter";
 import { receiveReplication } from "./receiveReplication";
 import { start } from "shared/start";
 import { StarterPlayer } from "@rbxts/services";
-
 export interface ClientState {
 	entityIdMap: Map<string, AnyEntity>;
 	reverseEntityIdMap: Map<AnyEntity, string>;
