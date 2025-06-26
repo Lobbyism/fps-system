@@ -60,7 +60,12 @@ const system: System<[World, ClientState]> = (world, state) => {
 				);
 			} else if (input.KeyCode === Enum.KeyCode.Space) {
 				if (!playerMovement || playerMovement.state !== MovementState.Sliding) continue;
-				world.remove(id, Movement);
+				world.insert(
+					id,
+					Movement({
+						state: "Idle",
+					}),
+				);
 			}
 		}
 	}
@@ -78,7 +83,12 @@ const system: System<[World, ClientState]> = (world, state) => {
 			),
 		);
 		if (playerMovement.linearVelocity.VectorVelocity.Magnitude < 8) {
-			world.remove(id, Movement);
+			world.insert(
+				id,
+				Movement({
+					state: "Idle",
+				}),
+			);
 		}
 	}
 	for (const [id, playerMovementRecord] of world.queryChanged(Movement)) {
