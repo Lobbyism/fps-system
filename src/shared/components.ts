@@ -32,13 +32,22 @@ export const HasWeapon = newComponent<
 export type HasWeapon = ReturnType<typeof HasWeapon>;
 export const ViewModel = newComponent<{ isAimingDownSights: boolean; model: Model }>("ViewModel");
 export type ViewModel = ReturnType<typeof ViewModel>;
-export const Movement = newComponent<{
-	state: MovementState;
-	startTime: DateTime;
-	initialVelocity: Vector3;
-	linearVelocity: LinearVelocity;
-	animationTrack: AnimationTrack;
-}>("Movement");
+export const Movement = newComponent<
+	| {
+			state: typeof MovementState.Idle;
+	  }
+	| {
+			state: typeof MovementState.Running;
+			animationTrack: AnimationTrack;
+	  }
+	| {
+			state: typeof MovementState.Sliding;
+			startTime: DateTime;
+			initialVelocity: Vector3;
+			linearVelocity: LinearVelocity;
+			animationTrack: AnimationTrack;
+	  }
+>("Movement");
 export const components = { Model, Player, Weapon, HasWeapon, Aim, ViewModel, Ammo };
 export type ComponentNames = keyof typeof components;
 export type ComponentsMap = { [K in ComponentNames]: MappedComponentToName<K> };
