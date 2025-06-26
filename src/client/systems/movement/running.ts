@@ -33,6 +33,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 			);
 		} else {
 			if (playerMovement.state === MovementState.Running) continue;
+			if (hasWeapon.state === WeaponUsageState.Shooting) continue;
 			if (viewModel.isAimingDownSights) continue;
 			const animation = new Instance("Animation");
 			animation.AnimationId = `rbxassetid://${weaponInfo.animationIds[MovementState.Running]}`;
