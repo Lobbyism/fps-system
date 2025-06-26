@@ -1,4 +1,4 @@
-import { AnyComponent, AnyEntity, World } from "@rbxts/matter";
+import { AnyComponent, AnyEntity, component, World } from "@rbxts/matter";
 import { ComponentCtor } from "@rbxts/matter/lib/component";
 import { ReplicatedStorage } from "@rbxts/services";
 import { t } from "@rbxts/t";
@@ -26,21 +26,44 @@ export function receiveReplication(world: World, state: ClientState): void {
 
 			const componentsToInsert = new Array<AnyComponent>();
 			const componentsToRemove = new Array<ComponentCtor>();
-
 			const insertNames = new Array<string>();
 			const removeNames = new Array<string>();
-
+			// Patch-or-insert logic:
+			// If the client already has an entity with this component, apply the incoming data via `.patch()` to preserve existing local state.
+			// Otherwise, construct a new component. This prevents overwriting client-side data while still keeping components in sync with the server.
 			for (const [name, container] of componentMap) {
 				if (container.data !== undefined) {
-					componentsToInsert.push(
-						components[name](container.data as UnionToIntersection<UnionComponentsMap>),
-					);
+					const componentCtor = components[name];
+					let component: AnyComponent;
+					if (clientEntityId !== undefined) {
+						const existing = world.get(clientEntityId, componentCtor);
+						if (existing !== undefined) {
+							component = (existing as AnyComponent).patch(container.data);
+						} else {
+							component = componentCtor(container.data as never);
+						}
+					} else {
+						component = componentCtor(container.data as never);
+					}
+					componentsToInsert.push(component);
 					insertNames.push(name);
 				} else {
 					componentsToRemove.push(components[name]);
 					removeNames.push(name);
 				}
 			}
+			// Previous behavior
+			// for (const [name, container] of componentMap) {
+			// 	if (container.data !== undefined) {
+			// 		componentsToInsert.push(
+			// 			components[name](container.data as UnionToIntersection<UnionComponentsMap>),
+			// 		);
+			// 		insertNames.push(name);
+			// 	} else {
+			// 		componentsToRemove.push(components[name]);
+			// 		removeNames.push(name);
+			// 	}
+			// }
 
 			if (clientEntityId === undefined) {
 				clientEntityId = world.spawn(...componentsToInsert);
