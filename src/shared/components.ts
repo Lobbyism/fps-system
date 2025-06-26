@@ -1,6 +1,6 @@
 import { AnyEntity } from "@rbxts/matter";
 import { GenericOfComponent, newComponent } from "@rbxts/matter/lib/component";
-import { WeaponUsageState } from "./weapons";
+import { MovementState, WeaponUsageState } from "./weapons";
 export const Model = newComponent<{ model: Model }>("Model");
 export const Player = newComponent<{ player: Player }>("Player");
 export const Ammo = newComponent<{ reserve: number }>("Ammo");
@@ -20,6 +20,13 @@ export const HasWeapon = newComponent<{ serverId: AnyEntity; state: WeaponUsageS
 export type HasWeapon = ReturnType<typeof HasWeapon>;
 export const ViewModel = newComponent<{ model: Model }>("ViewModel");
 export type ViewModel = ReturnType<typeof ViewModel>;
+export const Movement = newComponent<{
+	state: MovementState;
+	startTime: DateTime;
+	initialVelocity: Vector3;
+	linearVelocity: LinearVelocity;
+	animationTrack: AnimationTrack;
+}>("Movement");
 export const components = { Model, Player, Weapon, HasWeapon, Aim, ViewModel, Ammo };
 export type ComponentNames = keyof typeof components;
 export type ComponentsMap = { [K in ComponentNames]: MappedComponentToName<K> };

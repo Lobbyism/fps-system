@@ -8,6 +8,7 @@ export type WeaponUsageState = (typeof WeaponUsageState)[keyof typeof WeaponUsag
 export const MovementState = {
 	Sliding: "Sliding",
 } as const;
+export type MovementState = (typeof MovementState)[keyof typeof MovementState];
 export const WeaponAnimationNames = {
 	fire: "Fire",
 } as const;
