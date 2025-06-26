@@ -14,11 +14,23 @@ export const Aim = newComponent<{
 	origin: Vector3;
 	direction: Vector3;
 }>("Aim");
-export const HasWeapon = newComponent<{ serverId: AnyEntity; state: WeaponUsageState; cancelReload?: () => void }>(
-	"HasWeapon",
-);
+export const HasWeapon = newComponent<
+	{ serverId: AnyEntity; cancelReload?: () => void } & (
+		| {
+				animationTrack?: AnimationTrack;
+				state: typeof WeaponUsageState.Shooting;
+		  }
+		| {
+				state: typeof WeaponUsageState.Reloading;
+		  }
+		| {
+				animationTrack?: AnimationTrack;
+				state: typeof WeaponUsageState.Idle;
+		  }
+	)
+>("HasWeapon");
 export type HasWeapon = ReturnType<typeof HasWeapon>;
-export const ViewModel = newComponent<{ model: Model }>("ViewModel");
+export const ViewModel = newComponent<{ isAimingDownSights: boolean; model: Model }>("ViewModel");
 export type ViewModel = ReturnType<typeof ViewModel>;
 export const Movement = newComponent<{
 	state: MovementState;
