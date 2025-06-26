@@ -20,6 +20,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 		world.insert(
 			id,
 			ViewModel({
+				isAimingDownSights: false,
 				model: viewModel,
 			}),
 		);

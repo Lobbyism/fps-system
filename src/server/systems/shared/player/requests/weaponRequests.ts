@@ -31,16 +31,28 @@ const system: System<[World, ClientState]> = (world) => {
 			const weaponInfo = Weapons.get(weapon.name);
 			if (!weaponInfo) continue;
 			if (startShootingRequestCheck(request)) {
-				world.insert(
-					id,
-					hasWeapon.patch({
-						state: canShoot(weapon)
-							? WeaponUsageState.Shooting
-							: canReload(ammo, hasWeapon, weapon)
-								? WeaponUsageState.Reloading
-								: WeaponUsageState.Idle,
-					}),
-				);
+				if (canShoot(weapon)) {
+					world.insert(
+						id,
+						hasWeapon.patch({
+							state: WeaponUsageState.Shooting,
+						}),
+					);
+				} else if (canReload(ammo, hasWeapon, weapon)) {
+					world.insert(
+						id,
+						hasWeapon.patch({
+							state: WeaponUsageState.Reloading,
+						}),
+					);
+				} else {
+					world.insert(
+						id,
+						hasWeapon.patch({
+							state: WeaponUsageState.Idle,
+						}),
+					);
+				}
 			} else if (updateAimRequestCheck(request) && canShoot(weapon)) {
 				world.insert(id, Aim({ origin: request.origin, direction: request.direction }));
 			} else if (stopShootingRequestCheck(request)) {

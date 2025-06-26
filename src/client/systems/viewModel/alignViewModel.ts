@@ -1,25 +1,33 @@
 import { System, useEvent, World } from "@rbxts/matter";
 import { Players, RunService, UserInputService, Workspace } from "@rbxts/services";
-import { ClientState } from "client/client.client";
 import { Movement, Player, ViewModel } from "shared";
 import { MovementState } from "shared/weapons";
 const RENDER_STEPPED_NAME = "Camera";
-let isAiming = false;
 let aimCFrame = new CFrame();
 let previousCameraCFrame = new CFrame();
 let currentSlideOffset = new Vector3();
-const system: System<[World, ClientState]> = (world, state) => {
-	for (const [_, player] of world.query(Player, ViewModel)) {
+const system: System<[World]> = (world) => {
+	for (const [id, player, viewModel] of world.query(Player, ViewModel)) {
 		if (player.player !== Players.LocalPlayer) continue;
 		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputBegan")) {
 			if (gameProcessedEvent) continue;
 			if (input.UserInputType !== Enum.UserInputType.MouseButton2) continue;
-			isAiming = true;
+			world.insert(
+				id,
+				viewModel.patch({
+					isAimingDownSights: true,
+				}),
+			);
 		}
 		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputEnded")) {
 			if (gameProcessedEvent) continue;
 			if (input.UserInputType !== Enum.UserInputType.MouseButton2) continue;
-			isAiming = false;
+			world.insert(
+				id,
+				viewModel.patch({
+					isAimingDownSights: false,
+				}),
+			);
 		}
 	}
 	for (const [id, viewModelRecord] of world.queryChanged(ViewModel)) {
@@ -34,7 +42,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 				const playerMovement = world.get(id, Movement);
 				const aimPart = viewModel.model.FindFirstChild("AimPart");
 				if (!aimPart || !aimPart.IsA("BasePart") || !viewModel.model.PrimaryPart) return;
-				aimCFrame = isAiming
+				aimCFrame = viewModel.isAimingDownSights
 					? aimCFrame.Lerp(aimPart.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame), 0.1)
 					: aimCFrame.Lerp(new CFrame(), 0.1);
 				const slideOffsetTarget =

@@ -28,12 +28,21 @@ const system: System<[World]> = (world) => {
 		const weaponInfo = Weapons.get(weapon.name);
 		if (!weaponInfo) continue;
 		if (!canShoot(weapon)) {
-			world.insert(
-				id,
-				hasWeapon.patch({
-					state: canReload(ammo, hasWeapon, weapon) ? WeaponUsageState.Reloading : WeaponUsageState.Idle,
-				}),
-			);
+			if (canReload(ammo, hasWeapon, weapon)) {
+				world.insert(
+					id,
+					hasWeapon.patch({
+						state: WeaponUsageState.Reloading,
+					}),
+				);
+			} else {
+				world.insert(
+					id,
+					hasWeapon.patch({
+						state: WeaponUsageState.Idle,
+					}),
+				);
+			}
 		}
 		if (!useThrottle(1 / weaponInfo.fireRate, hasWeapon.serverId)) continue;
 		world.insert(

@@ -25,15 +25,19 @@ const system: System<[World, ClientState]> = (world, state) => {
 				const animationTrack = animator.LoadAnimation(animation);
 				animationTrack.Name = WeaponUsageState.Shooting;
 				animationTrack.Play();
+				world.insert(
+					id,
+					hasWeaponRecord.new.patch({
+						animationTrack: animationTrack,
+					}),
+				);
 			}
 		}
-		const currentHasWeaponState = hasWeaponRecord.new?.state;
-		if (hasWeaponRecord.old && currentHasWeaponState) {
-			animator.GetPlayingAnimationTracks().forEach((animationTrack) => {
-				if (animationTrack.Name !== currentHasWeaponState) {
-					animationTrack.Stop();
-				}
-			});
+		if (
+			hasWeaponRecord.old?.state === WeaponUsageState.Shooting &&
+			hasWeaponRecord.new?.state !== WeaponUsageState.Shooting
+		) {
+			hasWeaponRecord.old.animationTrack?.Stop();
 		}
 	}
 };
