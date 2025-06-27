@@ -17,7 +17,7 @@ const getSlidingAnimationId = (world: World, state: ClientState, id: AnyEntity) 
 	if (!weapon) return result;
 	const weaponInfo = Weapons.get(weapon.name);
 	if (!weaponInfo) return result;
-	return `rbxassetid://${weaponInfo.animationIds[MovementState.Sliding]}`;
+	return `rbxassetid://${weaponInfo.animationIds.viewModel[MovementState.Sliding]}`;
 };
 const system: System<[World, ClientState]> = (world, state) => {
 	for (const [id, player, playerModel, viewModel] of world.query(Player, Model, ViewModel)) {
