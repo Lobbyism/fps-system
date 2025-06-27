@@ -1,8 +1,10 @@
 import { useHookState, World } from "@rbxts/matter";
+import React from "@rbxts/react";
 import ReactRoblox from "@rbxts/react-roblox";
 import { Players } from "@rbxts/services";
 import { GameState, useGameState } from "./useGameState";
 import { damageFeedbackRenderer } from "./elements/damageFeedback";
+import { crosshairRenderer } from "./elements/crosshair";
 const cleanup = (storage: unknown) => {
 	return true;
 };
@@ -23,7 +25,11 @@ export const useApplication = (world: World) => {
 	}
 	const [stateChanged, gameState] = useGameState(world);
 	if (stateChanged) {
-		const damageFeedbackElement = damageFeedbackRenderer(world, gameState);
-		storage.handle.render(damageFeedbackElement);
+		storage.handle.render(
+			<>
+				{damageFeedbackRenderer(world, gameState)}
+				{crosshairRenderer(world, gameState)}
+			</>,
+		);
 	}
 };

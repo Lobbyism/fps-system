@@ -45,6 +45,7 @@ const system: System<[World]> = (world) => {
 		if (!player || player.player !== Players.LocalPlayer) continue;
 		const rootRigAttachment = modelRecord.new.model.PrimaryPart.FindFirstChild("RootRigAttachment");
 		if (!rootRigAttachment || !rootRigAttachment.IsA("Attachment")) continue;
+		pitchAngle = 0;
 		const alignOrientation = new Instance("AlignOrientation");
 		alignOrientation.MaxTorque = math.huge;
 		alignOrientation.Responsiveness = 200;
