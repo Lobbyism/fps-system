@@ -42,7 +42,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 			if (gameProcessedEvent) continue;
 			if (!weapon) continue;
 			if (input.UserInputType === Enum.UserInputType.MouseButton1) {
-				if (canShoot(weapon) && useThrottle(1 / weaponInfo.fireRate, id)) {
+				if (canShoot(weapon) && useThrottle(1 / weaponInfo.fireRate, weaponId)) {
 					world.insert(
 						id,
 						hasWeapon.patch({
@@ -58,7 +58,6 @@ const system: System<[World, ClientState]> = (world, state) => {
 					weaponRemoteEvent.FireServer({
 						type: WEAPON_REMOTE.payloads.startShooting,
 						origin: muzzleOriginAttachment.WorldPosition,
-						// direction: targetPosition.sub(muzzleOriginAttachment.WorldPosition).Unit,
 						direction: getSpreadDirection(
 							muzzleOriginAttachment.WorldPosition,
 							targetPosition,
