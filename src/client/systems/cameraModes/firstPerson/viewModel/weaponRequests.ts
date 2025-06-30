@@ -7,7 +7,6 @@ import { canReload, canShoot, Weapons, WeaponUsageState } from "shared/weapons";
 const RAYCAST_DISTANCE = 1e5;
 const weaponRemoteEvent = ReplicatedStorage.WaitForChild("remotes").WaitForChild(WEAPON_REMOTE.name) as RemoteEvent;
 const system: System<[World, ClientState]> = (world, state) => {
-	if (UserInputService.PreferredInput !== Enum.PreferredInput.KeyboardAndMouse) return;
 	for (const [id, player, playerModel, hasWeapon, ammo] of world.query(Player, Model, HasWeapon, Ammo)) {
 		if (player.player !== Players.LocalPlayer) continue;
 		if (!Workspace.CurrentCamera) continue;

@@ -80,7 +80,6 @@ const system: System<[World]> = (world) => {
 			hitInstance: raycastResult.Instance,
 			isCritical: isCritical,
 		});
-		// print(`Hit ${raycastResult.Instance.Name === "Head" ? "head" : "body"}`);
 	}
 	for (const [id, hasWeaponRecord] of world.queryChanged(HasWeapon)) {
 		if (!world.contains(id)) continue;
