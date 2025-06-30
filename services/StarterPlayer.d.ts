@@ -4,7 +4,7 @@ interface StarterPlayer {
 			systems: Folder & {
 				cameraModes: Folder & {
 					firstPerson: Folder;
-					tirdPerson: Folder;
+					thirdPerson: Folder;
 				};
 			};
 		};
