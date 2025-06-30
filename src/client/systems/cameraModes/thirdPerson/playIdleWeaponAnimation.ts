@@ -18,11 +18,10 @@ const playWeaponIdleAnimation = (world: World, weaponId: AnyEntity, playerModel:
 const system: System<[World, ClientState]> = (world, state) => {
 	for (const [id, hasWeaponRecord] of world.queryChanged(HasWeapon)) {
 		if (!world.contains(id)) continue;
+		if (!hasWeaponRecord.new) continue;
+		if (hasWeaponRecord.old) continue;
 		const [player, playerModel] = world.get(id, Player, Model);
 		if (!player || !playerModel || player.player !== Players.LocalPlayer) continue;
-		if (!hasWeaponRecord.new) continue;
-		if (hasWeaponRecord.new.state !== WeaponUsageState.Idle) continue;
-		if (hasWeaponRecord.old && hasWeaponRecord.old.state === hasWeaponRecord.new.state) continue;
 		const weaponId = state.entityIdMap.get(tostring(hasWeaponRecord.new.serverId));
 		if (!weaponId) continue;
 		playWeaponIdleAnimation(world, weaponId, playerModel.model);
@@ -32,6 +31,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 		if (!modelRecord.new) continue;
 		const [player, hasWeapon] = world.get(id, Player, HasWeapon);
 		if (!player || !hasWeapon || player.player !== Players.LocalPlayer) continue;
+		if (hasWeapon.state !== WeaponUsageState.Idle) continue;
 		const weaponId = state.entityIdMap.get(tostring(hasWeapon.serverId));
 		if (!weaponId) continue;
 		playWeaponIdleAnimation(world, weaponId, modelRecord.new.model);
