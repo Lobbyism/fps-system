@@ -1,11 +1,13 @@
 import { AnyEntity } from "@rbxts/matter";
 import { receiveReplication } from "./receiveReplication";
 import { start } from "shared/start";
-import { StarterPlayer, UserInputService } from "@rbxts/services";
-if (UserInputService.PreferredInput === Enum.PreferredInput.KeyboardAndMouse) {
-	StarterPlayer.StarterPlayerScripts.TS.systems.cameraModes.thirdPerson.Destroy();
-} else if (UserInputService.PreferredInput === Enum.PreferredInput.Touch) {
-	// Currently, there is no mechanism to toggle between first person and third person camera on mobile
+import { RunService, StarterPlayer, UserInputService } from "@rbxts/services";
+let cameraMode: Enum.CameraMode | undefined;
+if (RunService.IsStudio()) {
+	// Choose a camera mode
+	// cameraMode = Enum.CameraMode.LockFirstPerson;
+	// StarterPlayer.StarterPlayerScripts.TS.systems.cameraModes.thirdPerson.Destroy();
+	cameraMode = Enum.CameraMode.Classic;
 	StarterPlayer.StarterPlayerScripts.TS.systems.cameraModes.firstPerson.Destroy();
 }
 export interface ClientState {
