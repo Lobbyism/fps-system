@@ -16,6 +16,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 	for (const [id, hasWeaponRecord] of world.queryChanged(HasWeapon)) {
 		if (!world.contains(id)) continue;
 		if (!hasWeaponRecord.new) continue;
+		if (hasWeaponRecord.old) continue;
 		const [player, playerModel] = world.get(id, Player, Model);
 		if (!player || !playerModel || player.player !== Players.LocalPlayer) continue;
 		const weaponId = state.entityIdMap.get(tostring(hasWeaponRecord.new.serverId));
@@ -26,7 +27,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 	}
 	for (const [weaponId, , weaponModel] of world.query(Weapon, Model)) {
 		for (const [] of useEvent(weaponModel.model, weaponModel.model.GetPropertyChangedSignal("PrimaryPart"))) {
-			for (const [id, player, playerModel, hasWeapon] of world.query(Player, Model, HasWeapon)) {
+			for (const [_, player, playerModel, hasWeapon] of world.query(Player, Model, HasWeapon)) {
 				if (player.player !== Players.LocalPlayer) continue;
 				if (state.entityIdMap.get(tostring(hasWeapon.serverId)) !== weaponId) continue;
 				attachWeaponToRightHand(playerModel.model, weaponModel.model);

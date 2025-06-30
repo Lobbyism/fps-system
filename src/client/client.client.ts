@@ -1,9 +1,13 @@
 import { AnyEntity } from "@rbxts/matter";
 import { receiveReplication } from "./receiveReplication";
 import { start } from "shared/start";
-import { StarterPlayer } from "@rbxts/services";
-// StarterPlayer.StarterPlayerScripts.TS.systems.platforms.touch.Destroy();
-StarterPlayer.StarterPlayerScripts.TS.systems.cameraModes.firstPerson.Destroy();
+import { StarterPlayer, UserInputService } from "@rbxts/services";
+if (UserInputService.PreferredInput === Enum.PreferredInput.KeyboardAndMouse) {
+	StarterPlayer.StarterPlayerScripts.TS.systems.cameraModes.thirdPerson.Destroy();
+} else if (UserInputService.PreferredInput === Enum.PreferredInput.Touch) {
+	// Currently, there is no mechanism to toggle between first person and third person camera on mobile
+	StarterPlayer.StarterPlayerScripts.TS.systems.cameraModes.firstPerson.Destroy();
+}
 export interface ClientState {
 	entityIdMap: Map<string, AnyEntity>;
 	reverseEntityIdMap: Map<AnyEntity, string>;
