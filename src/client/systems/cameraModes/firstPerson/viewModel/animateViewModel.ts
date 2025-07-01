@@ -21,7 +21,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 				const weaponInfo = Weapons.get(weapon.name);
 				if (!weaponInfo) continue;
 				const animation = new Instance("Animation");
-				animation.AnimationId = `rbxassetid://${weaponInfo.animationIds[WeaponUsageState.Shooting]}`;
+				animation.AnimationId = `rbxassetid://${weaponInfo.animationIds.viewModel[WeaponUsageState.Shooting]}`;
 				const animationTrack = animator.LoadAnimation(animation);
 				animationTrack.Name = WeaponUsageState.Shooting;
 				animationTrack.Play();

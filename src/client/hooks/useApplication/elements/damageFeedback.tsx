@@ -22,7 +22,7 @@ const damageFeedbackRequestCheck = t.interface({
 });
 const damageFeedbacks: DamageFeedback[] = [];
 let nextDamageFeedbackId = 1;
-export const damageFeedbackUpdater: UIUpdater = (_) => {
+export const damageFeedbackUpdater: UIUpdater = () => {
 	let stateChanged = false;
 	const currentDateTime = DateTime.now();
 	for (let i = damageFeedbacks.size() - 1; i >= 0; i--) {
@@ -43,7 +43,7 @@ export const damageFeedbackUpdater: UIUpdater = (_) => {
 	}
 	return stateChanged;
 };
-export const damageFeedbackRenderer: UIRenderer = (_) => {
+export const damageFeedbackRenderer: UIRenderer = () => {
 	return (
 		<>
 			{damageFeedbacks.mapFiltered((damageFeedback) =>

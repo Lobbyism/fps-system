@@ -22,7 +22,7 @@ interface ScaleFunction {
 	 */
 	ceil: (pixels: number) => number;
 }
-const BASE_RESOLUTION = new Vector2(2532, 1173);
+const BASE_RESOLUTION = new Vector2(1280, 832);
 const MIN_SCALE = 0.1;
 const DOMINANT_AXIS = 0.5;
 /**

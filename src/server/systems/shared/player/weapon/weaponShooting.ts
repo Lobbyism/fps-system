@@ -1,4 +1,4 @@
-import { System, useDeltaTime, useThrottle, World } from "@rbxts/matter";
+import { System, useThrottle, World } from "@rbxts/matter";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { Aim, Ammo, HasWeapon, Model, Player, Weapon, WEAPON_REMOTE } from "shared";
 import { canReload, canShoot, Weapons, WeaponUsageState } from "shared/weapons";
@@ -80,7 +80,12 @@ const system: System<[World]> = (world) => {
 			hitInstance: raycastResult.Instance,
 			isCritical: isCritical,
 		});
-		print(`Hit ${raycastResult.Instance.Name === "Head" ? "head" : "body"}`);
+	}
+	for (const [id, hasWeaponRecord] of world.queryChanged(HasWeapon)) {
+		if (!world.contains(id)) continue;
+		if (hasWeaponRecord.new?.state === WeaponUsageState.Shooting) continue;
+		if (hasWeaponRecord.old?.state !== WeaponUsageState.Shooting) continue;
+		world.remove(id, Aim);
 	}
 };
 export = system;

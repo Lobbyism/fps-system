@@ -17,9 +17,14 @@ export const WeaponAnimationNames = {
 export type WeaponAnimationName = keyof typeof WeaponAnimationNames;
 export type WeaponInfo = {
 	animationIds: {
-		[WeaponUsageState.Shooting]: string;
-		[MovementState.Sliding]: string;
-		[MovementState.Running]: string;
+		viewModel: {
+			[WeaponUsageState.Shooting]: string;
+			[MovementState.Sliding]: string;
+			[MovementState.Running]: string;
+		};
+		character: {
+			[WeaponUsageState.Idle]: string;
+		};
 	};
 	damage: number;
 	fireRate: number;
@@ -34,13 +39,19 @@ export const Weapons = new Map<string, WeaponInfo>([
 		"M16A4",
 		{
 			animationIds: {
-				[WeaponUsageState.Shooting]: "119598271412864",
-				[MovementState.Sliding]: "79994438112815",
-				[MovementState.Running]: "112857441561315",
+				viewModel: {
+					[WeaponUsageState.Shooting]: "119598271412864",
+					[MovementState.Sliding]: "79994438112815",
+					[MovementState.Running]: "112857441561315",
+				},
+				character: {
+					[WeaponUsageState.Idle]: "115274717768824",
+				},
 			},
 			damage: 10,
 			fireRate: 9,
 			magazineSize: 30,
+			// magazineSize: math.huge,
 			name: "M16A4",
 			reloadTime: 1.5,
 			reserveAmmo: 90,
