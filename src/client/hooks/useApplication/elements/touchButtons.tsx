@@ -30,10 +30,13 @@ export const touchButtonsUpdater: UIUpdater = (world: World) => {
 	return stateChanged;
 };
 export const touchButtonsRenderer: UIRenderer = (_, state) => {
-	return playerHasWeapon && playerPreferredInput === Enum.PreferredInput.Touch ? (
+	return playerHasWeapon && true ? (
 		<TouchButtons
-			setTouchPressedWeaponUsageState={(weaponUsageState) => {
-				state.touchPressedWeaponUsageState = weaponUsageState;
+			setTouchPressedWeaponUsageState={(touchPressedWeaponUsageState) => {
+				state.touchPressedWeaponUsageState = touchPressedWeaponUsageState;
+			}}
+			setTouchPressedMovementState={(touchPressedMovementState) => {
+				state.touchPressedMovementState = touchPressedMovementState;
 			}}
 		/>
 	) : undefined;

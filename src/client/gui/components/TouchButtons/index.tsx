@@ -1,7 +1,7 @@
 import { usePx } from "client/gui/hooks";
 import React = require("@rbxts/react");
 import { WeaponUsageState } from "shared/weapons";
-import { TouchPressedWeaponUsageState } from "client/client.client";
+import { TouchPressedMovementState, TouchPressedWeaponUsageState } from "client/client.client";
 interface TouchButtonProps extends React.InstanceProps<TextButton> {}
 function TouchButton(props: TouchButtonProps) {
 	const px = usePx();
@@ -13,6 +13,7 @@ function TouchButton(props: TouchButtonProps) {
 }
 interface TouchButtonsProps {
 	setTouchPressedWeaponUsageState: (weaponUsageState?: TouchPressedWeaponUsageState) => void;
+	setTouchPressedMovementState: (movementState?: TouchPressedMovementState) => void;
 }
 export function TouchButtons(props: TouchButtonsProps) {
 	// Note that sliding and aiming are states as opposed to events...
@@ -25,7 +26,7 @@ export function TouchButtons(props: TouchButtonsProps) {
 				Text={"Jump"}
 				Event={{
 					MouseButton1Down: () => {
-						print("Jump");
+						props.setTouchPressedMovementState("Jumping");
 					},
 				}}
 			/>
@@ -35,7 +36,7 @@ export function TouchButtons(props: TouchButtonsProps) {
 				Text={"Crouch/Slide"}
 				Event={{
 					MouseButton1Down: () => {
-						print("Slide");
+						props.setTouchPressedMovementState("Sliding");
 					},
 				}}
 			/>

@@ -20,53 +20,66 @@ const getSlidingAnimationId = (world: World, state: ClientState, id: AnyEntity) 
 	return `rbxassetid://${weaponInfo.animationIds.viewModel[MovementState.Sliding]}`;
 };
 const system: System<[World, ClientState]> = (world, state) => {
-	for (const [id, player, playerModel, viewModel] of world.query(Player, Model, ViewModel)) {
+	for (const [id, player, playerModel] of world.query(Player, Model)) {
 		if (player.player !== Players.LocalPlayer) continue;
+		let playerWantsToSlide = state.touchPressedMovementState === MovementState.Sliding;
+		let playerWantsToJump = state.touchPressedMovementState === "Jumping";
+		state.touchPressedMovementState = undefined;
 		const humanoid = playerModel.model.FindFirstChild("Humanoid");
 		if (!humanoid || !humanoid.IsA("Humanoid")) continue;
-		const animator = viewModel.model.FindFirstChild("AnimationController")?.FindFirstChild("Animator");
-		if (!animator || !animator.IsA("Animator")) continue;
 		const playerMovement = world.get(id, Movement);
 		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputBegan")) {
-			if (gameProcessedEvent) return;
+			if (gameProcessedEvent) continue;
 			if (input.KeyCode === Enum.KeyCode.LeftShift) {
-				if (humanoid.MoveDirection.FuzzyEq(Vector3.zero, 0.1)) continue;
-				if (playerMovement && playerMovement.state === MovementState.Sliding) continue;
-				if (!playerModel.model.PrimaryPart) continue;
-				const rootRigAttachment = playerModel.model.PrimaryPart.FindFirstChild("RootRigAttachment");
-				if (!rootRigAttachment || !rootRigAttachment.IsA("Attachment")) continue;
-				if (!useThrottle(SLIDE_COOLDOWN_DURATION)) continue;
-				const linearVelocity = new Instance("LinearVelocity");
-				linearVelocity.Attachment0 = rootRigAttachment;
-				linearVelocity.VectorVelocity = humanoid.MoveDirection.Unit.mul(25);
-				linearVelocity.ForceLimitMode = Enum.ForceLimitMode.PerAxis;
-				linearVelocity.MaxAxesForce = new Vector3(1, 0, 1).mul(1e6);
-				linearVelocity.Name = SLIDE_LINEAR_VELOCITY_NAME;
-				linearVelocity.Parent = playerModel.model;
-				const viewModelSlidingAnimation = new Instance("Animation");
-				viewModelSlidingAnimation.AnimationId = getSlidingAnimationId(world, state, id);
-				const viewModelSlidingAnimationTrack = animator.LoadAnimation(viewModelSlidingAnimation);
-				viewModelSlidingAnimationTrack.Name = SLIDE_VIEWMODEL_ANIMATION_TRACK_NAME;
-				viewModelSlidingAnimationTrack.Play();
-				world.insert(
-					id,
-					Movement({
-						animationTrack: viewModelSlidingAnimationTrack,
-						initialVelocity: linearVelocity.VectorVelocity,
-						linearVelocity: linearVelocity,
-						startTime: DateTime.now(),
-						state: MovementState.Sliding,
-					}),
-				);
+				playerWantsToSlide = true;
 			} else if (input.KeyCode === Enum.KeyCode.Space) {
-				if (!playerMovement || playerMovement.state !== MovementState.Sliding) continue;
-				world.insert(
-					id,
-					Movement({
-						state: "Idle",
-					}),
-				);
+				playerWantsToJump = true;
 			}
+		}
+		if (playerWantsToSlide) {
+			if (humanoid.MoveDirection.FuzzyEq(Vector3.zero, 0.1)) continue;
+			if (playerMovement && playerMovement.state === MovementState.Sliding) continue;
+			if (!playerModel.model.PrimaryPart) continue;
+			const rootRigAttachment = playerModel.model.PrimaryPart.FindFirstChild("RootRigAttachment");
+			if (!rootRigAttachment || !rootRigAttachment.IsA("Attachment")) continue;
+			if (!useThrottle(SLIDE_COOLDOWN_DURATION)) continue;
+			const linearVelocity = new Instance("LinearVelocity");
+			linearVelocity.Attachment0 = rootRigAttachment;
+			linearVelocity.VectorVelocity = humanoid.MoveDirection.Unit.mul(25);
+			linearVelocity.ForceLimitMode = Enum.ForceLimitMode.PerAxis;
+			linearVelocity.MaxAxesForce = new Vector3(1, 0, 1).mul(1e6);
+			linearVelocity.Name = SLIDE_LINEAR_VELOCITY_NAME;
+			linearVelocity.Parent = playerModel.model;
+			const viewModelSlidingAnimation = new Instance("Animation");
+			viewModelSlidingAnimation.AnimationId = getSlidingAnimationId(world, state, id);
+			let viewModelAnimationTrack;
+			const viewModel = world.get(id, ViewModel);
+			if (viewModel) {
+				const animator = viewModel.model.FindFirstChild("AnimationController")?.FindFirstChild("Animator");
+				if (!animator || !animator.IsA("Animator")) continue;
+				viewModelAnimationTrack = animator.LoadAnimation(viewModelSlidingAnimation);
+				viewModelAnimationTrack.Name = SLIDE_VIEWMODEL_ANIMATION_TRACK_NAME;
+				viewModelAnimationTrack.Play();
+			}
+			world.insert(
+				id,
+				Movement({
+					viewModelAnimationTrack: viewModelAnimationTrack,
+					initialVelocity: linearVelocity.VectorVelocity,
+					linearVelocity: linearVelocity,
+					startTime: DateTime.now(),
+					state: MovementState.Sliding,
+				}),
+			);
+		} else if (playerWantsToJump) {
+			if (!playerMovement || playerMovement.state !== MovementState.Sliding) continue;
+			humanoid.ChangeState(Enum.HumanoidStateType.Jumping);
+			world.insert(
+				id,
+				Movement({
+					state: "Idle",
+				}),
+			);
 		}
 	}
 	for (const [id, player, playerMovement] of world.query(Player, Movement)) {
@@ -97,7 +110,9 @@ const system: System<[World, ClientState]> = (world, state) => {
 		if (playerMovementRecord.new?.state === MovementState.Sliding) continue;
 		const player = world.get(id, Player);
 		if (!player || player.player !== Players.LocalPlayer) continue;
-		playerMovementRecord.old.animationTrack.Stop();
+		if (playerMovementRecord.old.viewModelAnimationTrack) {
+			playerMovementRecord.old.viewModelAnimationTrack.Stop();
+		}
 		playerMovementRecord.old.linearVelocity.Destroy();
 	}
 };
