@@ -72,8 +72,8 @@ const system: System<[World, ClientState]> = (world, state) => {
 				}),
 			);
 		} else if (playerWantsToJump) {
-			if (!playerMovement || playerMovement.state !== MovementState.Sliding) continue;
 			humanoid.ChangeState(Enum.HumanoidStateType.Jumping);
+			if (!playerMovement || playerMovement.state !== MovementState.Sliding) continue;
 			world.insert(
 				id,
 				Movement({
