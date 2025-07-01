@@ -45,7 +45,7 @@ export const Movement = newComponent<
 			startTime: DateTime;
 			initialVelocity: Vector3;
 			linearVelocity: LinearVelocity;
-			animationTrack: AnimationTrack;
+			viewModelAnimationTrack?: AnimationTrack; // Temporarily make it optional
 	  }
 >("Movement");
 export const components = { Model, Player, Weapon, HasWeapon, Aim, ViewModel, Ammo };
