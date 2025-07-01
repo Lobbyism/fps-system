@@ -2,6 +2,7 @@ import { AnyEntity } from "@rbxts/matter";
 import { receiveReplication } from "./receiveReplication";
 import { start } from "shared/start";
 import { RunService, StarterPlayer, UserInputService } from "@rbxts/services";
+import { WeaponUsageState } from "shared/weapons";
 let cameraMode: Enum.CameraMode | undefined;
 if (RunService.IsStudio()) {
 	// Choose a camera mode
@@ -20,10 +21,12 @@ if (RunService.IsStudio()) {
 	}
 }
 assert(cameraMode);
+export type TouchPressedWeaponUsageState = (typeof WeaponUsageState)["Shooting" | "Reloading"];
 export interface ClientState {
 	cameraMode: Enum.CameraMode;
 	entityIdMap: Map<string, AnyEntity>;
 	reverseEntityIdMap: Map<AnyEntity, string>;
+	touchPressedWeaponUsageState?: TouchPressedWeaponUsageState;
 }
 start([StarterPlayer.StarterPlayerScripts.TS.systems], {
 	cameraMode: cameraMode,
