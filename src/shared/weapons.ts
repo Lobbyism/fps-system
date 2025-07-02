@@ -40,12 +40,12 @@ export const Weapons = new Map<string, WeaponInfo>([
 		{
 			animationIds: {
 				viewModel: {
-					[WeaponUsageState.Shooting]: "119598271412864",
-					[MovementState.Sliding]: "79994438112815",
-					[MovementState.Running]: "112857441561315",
+					[WeaponUsageState.Shooting]: "81073946689563", // "119598271412864",
+					[MovementState.Sliding]: "127337237740841", // "79994438112815",
+					[MovementState.Running]: "81011590993435 ", // "112857441561315",
 				},
 				character: {
-					[WeaponUsageState.Idle]: "115274717768824",
+					[WeaponUsageState.Idle]: "112316794065380", // "115274717768824",
 				},
 			},
 			damage: 10,
