@@ -1,35 +1,13 @@
-import { System, useEvent, World } from "@rbxts/matter";
-import { Players, RunService, UserInputService, Workspace } from "@rbxts/services";
+import { System, World } from "@rbxts/matter";
+import { Players, RunService, Workspace } from "@rbxts/services";
+import { ClientState } from "client/client.client";
 import { Movement, Player, ViewModel } from "shared";
 import { MovementState } from "shared/weapons";
 const RENDER_STEPPED_NAME = "Camera";
-let aimCFrame = new CFrame();
 let previousCameraCFrame = new CFrame();
-let currentSlideOffset = new Vector3();
-const system: System<[World]> = (world) => {
-	for (const [id, player, viewModel] of world.query(Player, ViewModel)) {
-		if (player.player !== Players.LocalPlayer) continue;
-		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputBegan")) {
-			if (gameProcessedEvent) continue;
-			if (input.UserInputType !== Enum.UserInputType.MouseButton2) continue;
-			world.insert(
-				id,
-				viewModel.patch({
-					isAimingDownSights: true,
-				}),
-			);
-		}
-		for (const [_, input, gameProcessedEvent] of useEvent(UserInputService, "InputEnded")) {
-			if (gameProcessedEvent) continue;
-			if (input.UserInputType !== Enum.UserInputType.MouseButton2) continue;
-			world.insert(
-				id,
-				viewModel.patch({
-					isAimingDownSights: false,
-				}),
-			);
-		}
-	}
+let aimOffset = new CFrame();
+let slideOffset = new Vector3();
+const system: System<[World, ClientState]> = (world, state) => {
 	for (const [id, viewModelRecord] of world.queryChanged(ViewModel)) {
 		if (!world.contains(id)) continue;
 		const player = world.get(id, Player);
@@ -42,14 +20,14 @@ const system: System<[World]> = (world) => {
 				const playerMovement = world.get(id, Movement);
 				const aimPart = viewModel.model.FindFirstChild("AimPart");
 				if (!aimPart || !aimPart.IsA("BasePart") || !viewModel.model.PrimaryPart) return;
-				aimCFrame = viewModel.isAimingDownSights
-					? aimCFrame.Lerp(aimPart.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame), 0.1)
-					: aimCFrame.Lerp(new CFrame(), 0.1);
+				aimOffset = viewModel.isAimingDownSights
+					? aimOffset.Lerp(aimPart.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame), 0.1)
+					: aimOffset.Lerp(new CFrame(), 0.1);
 				const slideOffsetTarget =
 					playerMovement?.state === MovementState.Sliding ? new Vector3(0, -2.5, 0) : new Vector3();
-				currentSlideOffset = currentSlideOffset.Lerp(slideOffsetTarget, 0.1);
-				Workspace.CurrentCamera.CFrame = Workspace.CurrentCamera.CFrame.mul(new CFrame(currentSlideOffset));
-				viewModel.model.PivotTo(Workspace.CurrentCamera.CFrame.mul(aimCFrame));
+				slideOffset = slideOffset.Lerp(slideOffsetTarget, 0.1);
+				Workspace.CurrentCamera.CFrame = Workspace.CurrentCamera.CFrame.mul(new CFrame(slideOffset));
+				viewModel.model.PivotTo(Workspace.CurrentCamera.CFrame.mul(aimOffset));
 				const cameraBone = viewModel.model.FindFirstChild("CameraBone");
 				if (!cameraBone || !cameraBone.IsA("BasePart")) return;
 				const newCameraCFrame = cameraBone.CFrame.ToObjectSpace(viewModel.model.PrimaryPart.CFrame);

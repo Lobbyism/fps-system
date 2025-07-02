@@ -1,15 +1,15 @@
 import { System, World } from "@rbxts/matter";
 import { Players, ReplicatedStorage } from "@rbxts/services";
 import { ClientState } from "client/client.client";
-import { HasWeapon, Model, Player, ViewModel, Weapon } from "shared";
+import { Camera, HasWeapon, Model, Player, ViewModel, Weapon } from "shared";
 const system: System<[World, ClientState]> = (world, state) => {
 	for (const [id, hasWeaponRecord] of world.queryChanged(HasWeapon)) {
 		if (!world.contains(id)) continue;
-		const [player, playerModel] = world.get(id, Player, Model);
-		if (!player || player.player !== Players.LocalPlayer || !playerModel) continue;
-		if (hasWeaponRecord.new && hasWeaponRecord.old?.serverId === hasWeaponRecord.new.serverId) continue;
-		world.remove(id, ViewModel);
 		if (!hasWeaponRecord.new) continue;
+		if (hasWeaponRecord.new && hasWeaponRecord.old?.serverId === hasWeaponRecord.new.serverId) continue;
+		const [player, playerModel] = world.get(id, Player, Model);
+		if (!player || !playerModel) continue;
+		if (player.player !== Players.LocalPlayer) continue;
 		const weaponId = state.entityIdMap.get(tostring(hasWeaponRecord.new.serverId));
 		if (!weaponId) continue;
 		const weapon = world.get(weaponId, Weapon);

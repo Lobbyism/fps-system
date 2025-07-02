@@ -1,6 +1,7 @@
 import { AnyEntity } from "@rbxts/matter";
 import { GenericOfComponent, newComponent } from "@rbxts/matter/lib/component";
 import { MovementState, WeaponUsageState } from "./weapons";
+export const Camera = newComponent<{ cameraMode: "FirstPerson" | "ThirdPerson" }>("Camera");
 export const Model = newComponent<{ model: Model }>("Model");
 export const Player = newComponent<{ player: Player }>("Player");
 export const Ammo = newComponent<{ reserve: number }>("Ammo");
@@ -45,7 +46,7 @@ export const Movement = newComponent<
 			startTime: DateTime;
 			initialVelocity: Vector3;
 			linearVelocity: LinearVelocity;
-			viewModelAnimationTrack?: AnimationTrack; // Temporarily make it optional
+			viewModelAnimationTrack: AnimationTrack;
 	  }
 >("Movement");
 export const components = { Model, Player, Weapon, HasWeapon, Aim, ViewModel, Ammo };

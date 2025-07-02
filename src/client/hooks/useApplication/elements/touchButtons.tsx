@@ -1,14 +1,11 @@
 import React from "@rbxts/react";
-import { useEvent, World } from "@rbxts/matter";
 import { UIRenderer, UIUpdater } from "..";
-import { HasWeapon, Player } from "shared";
-import { Players, UserInputService } from "@rbxts/services";
+import { Camera, HasWeapon, Player } from "shared";
+import { Players } from "@rbxts/services";
 import { TouchButtons } from "client/gui/components/TouchButtons";
-import { WeaponUsageState } from "shared/weapons";
 let firstRunSystem = true;
 let playerHasWeapon = false;
-let playerPreferredInput: Enum.PreferredInput | undefined;
-export const touchButtonsUpdater: UIUpdater = (world: World) => {
+export const touchButtonsUpdater: UIUpdater = (world, state) => {
 	if (firstRunSystem) {
 		firstRunSystem = false;
 	}
@@ -22,21 +19,26 @@ export const touchButtonsUpdater: UIUpdater = (world: World) => {
 		}
 		playerHasWeapon = hasWeaponRecord.new !== undefined;
 	}
-	for (const [] of useEvent(UserInputService, UserInputService.GetPropertyChangedSignal("PreferredInput"))) {
-		if (playerPreferredInput === UserInputService.PreferredInput) continue;
-		stateChanged = true;
-		playerPreferredInput = UserInputService.PreferredInput;
-	}
 	return stateChanged;
 };
-export const touchButtonsRenderer: UIRenderer = (_, state) => {
-	return playerHasWeapon && UserInputService.PreferredInput === Enum.PreferredInput.Touch ? (
+export const touchButtonsRenderer: UIRenderer = (world, state) => {
+	return playerHasWeapon && state.preferredInput === Enum.PreferredInput.Touch ? (
 		<TouchButtons
 			setTouchPressedWeaponUsageState={(touchPressedWeaponUsageState) => {
 				state.touchPressedWeaponUsageState = touchPressedWeaponUsageState;
 			}}
 			setTouchPressedMovementState={(touchPressedMovementState) => {
 				state.touchPressedMovementState = touchPressedMovementState;
+			}}
+			toggleCameraMode={() => {
+				const [cameraId, camera] = world.query(Camera)();
+				if (!cameraId) return;
+				world.insert(
+					cameraId,
+					camera.patch({
+						cameraMode: camera.cameraMode === "FirstPerson" ? "ThirdPerson" : "FirstPerson",
+					}),
+				);
 			}}
 		/>
 	) : undefined;
