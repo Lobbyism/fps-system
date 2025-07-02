@@ -1,3 +1,4 @@
+import { RunService } from "@rbxts/services";
 import { Ammo, HasWeapon, Weapon } from "./components";
 export const WeaponUsageState = {
 	Idle: "Idle",
@@ -40,12 +41,12 @@ export const Weapons = new Map<string, WeaponInfo>([
 		{
 			animationIds: {
 				viewModel: {
-					[WeaponUsageState.Shooting]: "119598271412864",
-					[MovementState.Sliding]: "79994438112815",
-					[MovementState.Running]: "112857441561315",
+					[WeaponUsageState.Shooting]: RunService.IsStudio() ? "119598271412864" : "81073946689563",
+					[MovementState.Sliding]: RunService.IsStudio() ? "79994438112815" : "127337237740841",
+					[MovementState.Running]: RunService.IsStudio() ? "112857441561315" : "81011590993435 ",
 				},
 				character: {
-					[WeaponUsageState.Idle]: "115274717768824",
+					[WeaponUsageState.Idle]: RunService.IsStudio() ? "115274717768824" : "112316794065380",
 				},
 			},
 			damage: 10,

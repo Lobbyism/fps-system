@@ -14,6 +14,7 @@ function TouchButton(props: TouchButtonProps) {
 interface TouchButtonsProps {
 	setTouchPressedWeaponUsageState: (weaponUsageState?: TouchPressedWeaponUsageState) => void;
 	setTouchPressedMovementState: (movementState?: TouchPressedMovementState) => void;
+	toggleCameraMode: () => void;
 }
 export function TouchButtons(props: TouchButtonsProps) {
 	// Note that sliding and aiming are states as opposed to events...
@@ -66,6 +67,15 @@ export function TouchButtons(props: TouchButtonsProps) {
 				Event={{
 					MouseButton1Down: () => props.setTouchPressedWeaponUsageState(WeaponUsageState.Reloading),
 					MouseButton1Up: () => props.setTouchPressedWeaponUsageState(undefined),
+				}}
+			/>
+			<TouchButton
+				AnchorPoint={new Vector2(0, 0)}
+				Position={UDim2.fromOffset(px(50), px(150))}
+				Size={UDim2.fromOffset(px(85), px(85))}
+				Text={"Camera"}
+				Event={{
+					MouseButton1Down: () => props.toggleCameraMode(),
 				}}
 			/>
 		</frame>

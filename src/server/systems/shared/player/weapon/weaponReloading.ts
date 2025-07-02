@@ -14,9 +14,6 @@ const system: System<[World]> = (world) => {
 		if (!weapon) continue;
 		const weaponInfo = Weapons.get(weapon.name);
 		if (!weaponInfo) continue;
-		if (hasWeaponRecord.new.cancelReload) {
-			hasWeaponRecord.new.cancelReload();
-		}
 		let reloadCancelled = false;
 		world.insert(
 			id,
@@ -44,6 +41,14 @@ const system: System<[World]> = (world) => {
 			);
 			world.insert(weaponId, updatedWeapon);
 		});
+	}
+	for (const [id, hasWeaponRecord] of world.queryChanged(HasWeapon)) {
+		if (!hasWeaponRecord.old) continue;
+		if (!hasWeaponRecord.new) continue;
+		if (hasWeaponRecord.old.state !== WeaponUsageState.Reloading) continue;
+		if (hasWeaponRecord.new.state === WeaponUsageState.Reloading) continue;
+		if (!hasWeaponRecord.old.cancelReload) continue;
+		hasWeaponRecord.old.cancelReload();
 	}
 };
 export = system;

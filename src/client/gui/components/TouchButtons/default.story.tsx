@@ -5,7 +5,11 @@ export = function (target: Instance) {
 	const handle = ReactRoblox.createRoot(new Instance("Folder"));
 	handle.render(
 		ReactRoblox.createPortal(
-			<TouchButtons setTouchPressedWeaponUsageState={() => {}} setTouchPressedMovementState={() => {}} />,
+			<TouchButtons
+				setTouchPressedWeaponUsageState={() => {}}
+				setTouchPressedMovementState={() => {}}
+				toggleCameraMode={() => {}}
+			/>,
 			target,
 		),
 	);

@@ -20,7 +20,7 @@ const getSlidingAnimationId = (world: World, state: ClientState, id: AnyEntity) 
 	return `rbxassetid://${weaponInfo.animationIds.viewModel[MovementState.Sliding]}`;
 };
 const system: System<[World, ClientState]> = (world, state) => {
-	for (const [id, player, playerModel] of world.query(Player, Model)) {
+	for (const [id, player, playerModel, playerViewModel] of world.query(Player, Model, ViewModel)) {
 		if (player.player !== Players.LocalPlayer) continue;
 		let playerWantsToSlide = state.touchPressedMovementState === MovementState.Sliding;
 		let playerWantsToJump = state.touchPressedMovementState === "Jumping";
@@ -53,14 +53,11 @@ const system: System<[World, ClientState]> = (world, state) => {
 			const viewModelSlidingAnimation = new Instance("Animation");
 			viewModelSlidingAnimation.AnimationId = getSlidingAnimationId(world, state, id);
 			let viewModelAnimationTrack;
-			const viewModel = world.get(id, ViewModel);
-			if (viewModel) {
-				const animator = viewModel.model.FindFirstChild("AnimationController")?.FindFirstChild("Animator");
-				if (!animator || !animator.IsA("Animator")) continue;
-				viewModelAnimationTrack = animator.LoadAnimation(viewModelSlidingAnimation);
-				viewModelAnimationTrack.Name = SLIDE_VIEWMODEL_ANIMATION_TRACK_NAME;
-				viewModelAnimationTrack.Play();
-			}
+			const animator = playerViewModel.model.FindFirstChild("AnimationController")?.FindFirstChild("Animator");
+			if (!animator || !animator.IsA("Animator")) continue;
+			viewModelAnimationTrack = animator.LoadAnimation(viewModelSlidingAnimation);
+			viewModelAnimationTrack.Name = SLIDE_VIEWMODEL_ANIMATION_TRACK_NAME;
+			viewModelAnimationTrack.Play();
 			world.insert(
 				id,
 				Movement({
@@ -110,9 +107,7 @@ const system: System<[World, ClientState]> = (world, state) => {
 		if (playerMovementRecord.new?.state === MovementState.Sliding) continue;
 		const player = world.get(id, Player);
 		if (!player || player.player !== Players.LocalPlayer) continue;
-		if (playerMovementRecord.old.viewModelAnimationTrack) {
-			playerMovementRecord.old.viewModelAnimationTrack.Stop();
-		}
+		playerMovementRecord.old.viewModelAnimationTrack.Stop();
 		playerMovementRecord.old.linearVelocity.Destroy();
 	}
 };
