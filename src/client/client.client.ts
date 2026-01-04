@@ -15,5 +15,5 @@ export interface ClientState {
 start([StarterPlayer.StarterPlayerScripts.TS.systems], {
 	entityIdMap: new Map<string, AnyEntity>(),
 	reverseEntityIdMap: new Map<AnyEntity, string>(),
-	preferredInput: RunService.IsStudio() ? Enum.PreferredInput.KeyboardAndMouse : UserInputService.PreferredInput,
+	preferredInput: RunService.IsStudio() ? Enum.PreferredInput.Touch : UserInputService.PreferredInput,
 })(receiveReplication);
